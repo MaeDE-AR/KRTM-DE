@@ -15,9 +15,26 @@
     <!-- ar-placement="wall" tvinger modellen til å feste seg på kortet/veggen i stedet for gulvet -->
     <model-viewer 
         src="cube.glb" ios-src="CUBE.usdz" ar ar-placement="wall" camera-controls touch-action="pan-y" alt="En 3D-modell klistret til kortet" shadow-intensity="1">
+    
             <button slot="ar-button" style="background-color: white; border-radius: 4px; border: none; position: absolute; top: 16px; right: 16px; ">
                 👋 Activate AR
             </button>
-    </model-viewer>
+                          <div class="controls glass">
+                    <div>
+                      <label for="neutral">Neutral Lighting: </label>
+                      <input id="neutral" type="checkbox" checked="true">
+                    </div>
+                  </div>
+                </model-viewer>
+                <script>
+                  (() => {
+                    const modelViewer = document.querySelector('#neutral-demo');
+                    const checkbox = document.querySelector('#neutral');
+
+                    checkbox.addEventListener('change', () => {
+                      modelViewer.environmentImage = checkbox.checked ? '' : 'legacy';
+                    });
+                  })();
+                </script>
 </body>
 </html>

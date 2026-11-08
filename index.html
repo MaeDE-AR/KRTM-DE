@@ -27,16 +27,8 @@
                   </div>
                 </model-viewer>
                 <script>
-                  (() => {
-                    const modelViewer = document.querySelector('#neutral-demo');
-                    const checkbox = document.querySelector('#neutral');
-
-                    checkbox.addEventListener('change', () => {
-                      modelViewer.environmentImage = checkbox.checked ? '' : 'legacy';
-                    });
-                  })();
-        
-    <div class="controls glass">
+                  (() => {const modelViewer = document.querySelector('#neutral-demo');const checkbox = document.querySelector('#neutral');checkbox.addEventListener('change', () => {modelViewer.environmentImage = checkbox.checked ? '' : 'legacy';});})();
+                    <div class="controls glass">
                     <div>Variant: <custom-select id="variant"></custom-select></div>
                   </div>
                 </model-viewer>

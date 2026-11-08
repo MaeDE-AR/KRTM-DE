@@ -4,54 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kort-AR via Google</title>
-    <!-- Fiksa faktisk selv, beginner å lære -->
+    <!-- Offisiell og stabil lenke til Googles model-viewer -->
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     <style>
-        body { margin: 0; padding: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; background-color: ##8f8f8f; }
-        model-viewer { width: 100%; height: 100%; }
+        body { margin: 0; padding: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; background-color: #8f8f8f; }
+        model-viewer { width: 100%; height: 100%; position: relative; }
+        
+        /* Enkel styling for kontrollpanelet ditt */
+        .controls { position: absolute; bottom: 16px; left: 16px; background: rgba(255, 255, 255, 0.8); padding: 12px; border-radius: 8px; font-family: sans-serif; display: flex; flex-direction: column; gap: 8px; z-index: 10; }
+        .control-row { display: flex; align-items: center; gap: 8px; }
+        input[type="color"] { border: none; padding: 0; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
     </style>
 </head>
 <body>
-    <!-- ar-placement="wall" tvinger modellen til å feste seg på kortet/veggen i stedet for gulvet -->
-    <model-viewer 
-        src="cube.glb" ios-src="CUBE.usdz" ar ar-placement="wall" camera-controls touch-action="pan-y" alt="En 3D-modell klistret til kortet" shadow-intensity="1">
-    
-            <button slot="ar-button" style="background-color: white; border-radius: 4px; border: none; position: absolute; top: 16px; right: 16px; ">
-                👋 Activate AR
-            </button>
-                          <div class="controls glass">
-                    <div>
-                      <label for="neutral">Neutral Lighting: </label>
-                      <input id="neutral" type="checkbox" checked="true">
-                    </div>
-                  </div>
-                </model-viewer>
-                <script>
-                  (() => {const modelViewer = document.querySelector('#neutral-demo');const checkbox = document.querySelector('#neutral');checkbox.addEventListener('change', () => {modelViewer.environmentImage = checkbox.checked ? '' : 'legacy';});})();
-                    <div class="controls glass">
-                    <div>Variant: <custom-select id="variant"></custom-select></div>
-                  </div>
-                </model-viewer>
-                  const modelViewerVariants = document.querySelector("model-viewer#shoe");
-                  const select = document.querySelector('#variant');
-                  modelViewerVariants.addEventListener('load', () => {
-                    const names = modelViewerVariants.availableVariants;
-                    for (const name of names) {
-                      const option = document.createElement('option');
-                      option.value = name;
-                      option.textContent = name;
-                      select.appendChild(option);
-                    }
-                    // Adds a default option.
-                    const option = document.createElement('option');
-                    option.value = 'default';
-                    option.textContent = 'Default';
-                    select.appendChild(option);
-                  });
 
-                  select.addEventListener('input', (event) => {
-                    modelViewerVariants.variantName = event.target.value === 'default' ? null : event.target.value;
-                  });
-                </script>
+    <model-viewer 
+        id="ar-modell"
+        src="cube.glb" 
+        ios-src="cube.usdz" 
+        ar 
+        ar-placement="floor" 
+        camera-controls 
+        touch-action="pan-y" 
+        alt="En 3D-modell klistret til kortet" 
+        shadow-intensity="1">
+    
+        <!-- Egendefinert AR-knapp -->
+        <button slot="ar-button" style="background-color: white; border-radius: 4px; border: none; position: absolute; top: 16px; right: 16px; padding: 10px 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.25); cursor: pointer;">
+            👋 Activate AR
+        </button>
+
+        <!-- Kontrollpanel -->
+        <div class="controls">
+            <div class="control-row">
+                <label for="neutral">Neutral Lighting: </label>
+                <input id="neutral" type="checkbox" checked="true">
+            </div>
+            <!-- Ny fargevelger rad -->
+            <div class="control-row">
+                <label for="color-picker">Velg farge: </label>
+                <input id="color-picker" type="color" value="#ff0000">
+            </div>
+        </div>
+
+    </model-viewer>
+
+    <script>
+        const modelViewer = document.querySelector('#ar-modell');
+        const checkbox = document.querySelector('#neutral');
+        const colorPicker = document.querySelector('#color-picker');
+
+        // Bryter for nøytralt studiolyselement
+        checkbox.addEventListener('change', () => {
+            modelViewer.environmentImage = checkbox.checked ? '' : 'legacy';
+        });
+
+        // Endre farge direkte via skript
+        colorPicker.addEventListener('input', (event) => {
+            const hexColor = event.target.value; // Henter fargen som f.eks "#ff0000"
+            
+            // Model-viewer bruker RGB-verdier mellom 0.0 og 1.0 (ikke 0-255 eller HEX)
+            // Vi gjør om HEX til prosenbaserte RGB-tall:
+            const r = parseInt(hexColor.slice(1, 3), 16) / 255;
+            const g = parseInt(hexColor.slice(3, 5), 16) / 255;
+            const b = parseInt(hexColor.slice(5, 7), 16) / 255;
+            
+            const rgbColor = [r, g, b, 1.0]; // 1.0 er gjennomsiktighet (Alpha)
+
+            // Sjekker at modellen er ferdig lastet før vi endrer farge
+            if (modelViewer.loaded) {
+                // Metode A: Endre fargen på ALLER første materiale den finner (bra for enkle modeller/kuber)
+                const material = modelViewer.model.materials[0];
+                if (material) {
+                    material.pbrMetallicRoughness.setBaseColorFactor(rgbColor);
+                }
+
+                /* 
+                // Metode B: Hvis modellen din har FLERE deler og du vil endre et spesifikt materiale ved navn:
+                const spesifiktMateriale = modelViewer.model.materials.find(m => m.name === 'NavnPaaMaterialetDitt');
+                if (spesifiktMateriale) {
+                    spesifiktMateriale.pbrMetallicRoughness.setBaseColorFactor(rgbColor);
+                }
+                */
+            }
+        });
+    </script>
 </body>
 </html>

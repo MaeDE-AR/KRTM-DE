@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bildesporing AR</title>
     
-    <!-- De fulle, offisielle og fungerende lenkene til AR-motoren -->
-    <script src="https://aframe.io"></script>
-    <script src="https://jsdelivr.net"></script>
+    <!-- Robuste, fullstendige og fungerende lenker til AR-motoren via UNPKG -->
+    <script src="https://unpkg.com"></script>
+    <script src="https://unpkg.com"></script>
     
     <style>
         body { margin: 0; overflow: hidden; }
@@ -17,7 +17,7 @@
 </head>
 <body>
 
-    <!-- Starter kameraet og laster søkefilen din (targets.mind) -->
+    <!-- Starter kameraet og aktiverer lasteskjerm (uiLoading: yes) -->
     <a-scene mindar-image="imageTargetSrc: targets.mind; uiLoading: yes; uiScanning: yes;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       
       <a-assets>
@@ -27,7 +27,7 @@
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- Denne taggen MÅ være her. targetIndex: 0 låser kuben til det første bildet i targets.mind -->
+      <!-- targetIndex: 0 låser kuben til det første bildet du lastet opp i targets.mind -->
       
         <a-gltf-model rotation="0 0 0" position="0 0 0" scale="0.05 0.05 0.05" src="#avatarModel"></a-gltf-model>
       

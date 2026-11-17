@@ -93,9 +93,12 @@
                 if (material) {
                     material.pbrMetallicRoughness.setBaseColorFactor(rgbColor);
                 }
+            window.addEventListener('DOMContentLoaded', () => {
             const qrBilde = document.querySelector('#qr-bilde');
+            if (qrBilde) {
             const currentUrl = encodeURIComponent(window.location.href);
-            qrBilde.src = `https://qrserver.com{currentUrl}`;
+        qrBilde.src = `https://quickchart.io{currentUrl}&size=150`; } });
+
 
                 /* 
                 // Metode B: Hvis modellen din har FLERE deler og du vil endre et spesifikt materiale ved navn:

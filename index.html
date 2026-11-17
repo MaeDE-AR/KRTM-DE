@@ -14,6 +14,14 @@
         .controls { position: absolute; bottom: 16px; left: 16px; background: rgba(255, 255, 255, 0.8); padding: 12px; border-radius: 8px; font-family: sans-serif; display: flex; flex-direction: column; gap: 8px; z-index: 10; }
         .control-row { display: flex; align-items: center; gap: 8px; }
         input[type="color"] { border: none; padding: 0; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
+        /* QR-kode boks nede til høyre (for PC-brukere) */
+        .qr-box { position: absolute; bottom: 16px; right: 16px; background: rgba(255, 255, 255, 0.9); padding: 12px; border-radius: 8px; font-family: sans-serif; text-align: center; z-index: 10; box-shadow: 0 2px 6px rgba(0,0,0,0.2); display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .qr-box img { width: 120px; height: 120px; display: block; border-radius: 4px; }
+        .qr-box span { font-size: 12px; font-weight: bold; color: #333; max-width: 120px; }
+
+/* Skjuler QR-koden på mobilskjermer */
+        @media (max-width: 768px) {
+        .qr-box { display: none; } }
     </style>
 </head>
 <body>
@@ -48,6 +56,11 @@
                 <input id="color-picker" type="color" value="#ff0000">
             </div>
         </div>
+        <!-- QR-kode boks -->
+        <div class="qr-box">
+            <img id="qr-bilde" src="" alt="QR-kode for AR">
+            <span>Skann med mobil for AR</span>
+        </div>
 
     </model-viewer>
 
@@ -80,6 +93,9 @@
                 if (material) {
                     material.pbrMetallicRoughness.setBaseColorFactor(rgbColor);
                 }
+            const qrBilde = document.querySelector('#qr-bilde');
+            const currentUrl = encodeURIComponent(window.location.href);
+        qrBilde.src = `https://qrserver.com{currentUrl}`;
 
                 /* 
                 // Metode B: Hvis modellen din har FLERE deler og du vil endre et spesifikt materiale ved navn:

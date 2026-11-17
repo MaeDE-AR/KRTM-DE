@@ -58,7 +58,7 @@
         </div>
         <!-- QR-kode boks -->
         <div class="qr-box">
-            <img id="qr-bilde" src="" alt="QR-kode for AR">
+            <img src="qr.png" alt="QR-kode for AR">
             <span>Scan for AR</span>
         </div>
 
@@ -93,11 +93,6 @@
                 if (material) {
                     material.pbrMetallicRoughness.setBaseColorFactor(rgbColor);
                 }
-            window.addEventListener('DOMContentLoaded', () => {
-            const qrBilde = document.querySelector('#qr-bilde');
-            if (qrBilde) {
-            const currentUrl = encodeURIComponent(window.location.href);
-        qrBilde.src = `https://quickchart.io{currentUrl}&size=150`; } });
 
 
                 /* 
